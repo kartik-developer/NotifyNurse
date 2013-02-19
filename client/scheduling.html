@@ -1,0 +1,264 @@
+<head>
+	<title>Scheduling System</title>
+	 
+	<!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJbWLQsHDrrrzu0JPKgRcE_6TxfsUUlhc&sensor=false"> </script> -->
+<!--	<script src="//maps.google.com/maps?file=api&v=3.exp&key=AIzaSyAJbWLQsHDrrrzu0JPKgRcE_6TxfsUUlhc" type="text/javascript"></script>-->
+<!--	<script type="text/javascript"   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJbWLQsHDrrrzu0JPKgRcE_6TxfsUUlhc&sensor=false" >   </script>-->
+
+</head>
+
+<body>
+	<div id="main">
+		{{> Main}}
+	</div>
+</body>
+
+<template name="Main">
+	{{#if SignedIn}}
+		{{#if IsClient}}
+			{{> clientdashboard}}
+			{{> nurselist}}
+		{{else}}
+			{{#if IsNurse}}
+				{{> nursedashboard}}
+				{{> clientRequestList}}
+			{{/if}}
+		{{/if}}
+	{{else}}
+		{{> login}}
+	{{/if}} 
+	 
+</template>
+
+<template name="login">
+	{{#if NewUser}}
+		{{> registerPage}}
+	{{else}}
+	<h1 id="title">Login</h1>
+	<div id="register_window">
+		<form id="register_form">
+			<div id="warning"></div>
+			<label>Username : </label>
+			<input type="text" id="username" placeholder="Enter Username" autocomplete="off" value="testuser" /><br><br>
+			<label>Password &nbsp;: </label>
+			<input type="text" id="password" placeholder="Enter Password" autocomplete="off" value="testuser"  style='margin-left:3px;' /><br><br>
+			<label>Login as &nbsp;: </label> 
+			<input type="radio" id="usrClient" value="client" name="usertype"  checked="true"/><label for="usrClient">Client</label>
+			<input type="radio" id="usrNurse" value="nurse" name="usertype" /><label for="usrNurse">Nurse</label>
+			<input type="button" id="btnLogin" value='Login' style='margin-left:90px; margin-top:20px;' />
+			<input type="button" id="btnRegister" value='Signup' style='margin-left:90px; margin-top:20px;' /><br/><br/>
+			<label>Login with &nbsp;: </label> 
+			<div style="display: inline-block;vertical-align: top" id="fbDiv">
+			<div id="fb-root" style="display: inline-block;vertical-align: top"></div>
+			   {{connect}}
+			   <fb:login-button  autologoutlink="true" show-faces="false" width="200" max-rows="1" scope="publish_actions"></fb:login-button>
+			</div>
+		</form>
+	</div>
+	{{includeFbIfNot}}
+	{{/if}}
+</template>
+
+<template name="clientdashboard">
+	<h1 id="title">Welcome {{username}}! <input type="button" id="btnLogout" value='Logout' style='float: right;  ' /></h1>
+	<div id="register_window">
+		Make a new request for shift..<br><br>
+		<label style='font-size:12px;'>Select Shift Date : </label><input type="text" value="" id="datepicker" /><br>
+		<input type="button" id="btnCreateShift" value='Make Request' style='margin-left:00px; margin-top:20px;' /><br><span style="color: #008F00; font-size: 12px;" id="succmsg"></span>
+	</div>
+	<br>
+	<h1 id="listtitle">Requested Shifts List :</h1>
+	<div id="client_requests_window">
+		<table style="border:1px solid #ccc; width:100%;">
+		{{#if nodata}}
+		<tr>
+			<td>No Shift Request Found.!</td>
+		</tr>
+		{{else}}
+		{{#each shifts}}
+		<tr>
+			<td style="border:1px solid #ccc; width:55%;">{{shift_date}}</td>
+			<td align="center" style="font-size:12px; border:1px solid #ccc; width:25%;"><a href="javascript:void(0);" onclick="getNursesForDate('{{shift_date}}')" class='req_id' req_id='{{_id}}'>View Available Nurses</a></td>
+			<td align="center" style="font-size:12px; border:1px solid #ccc; width:20%;"><a href="javascript:void(0);" onclick="deleteRequest('{{_id}}');">Cancel Request</a></td>
+		</tr>
+		{{/each}}
+		{{/if}}
+		</table>
+		<div id="divtemp"></div>
+	</div>
+</template>
+
+<template name="nursedashboard">
+	<h1 id="title">Welcome {{username}}! <input type="button" id="btnLogout" value='Logout' style='float: right;  ' /></h1>
+	<div id="register_window">
+		Select your availability..<br><br>
+		<label style='font-size:12px;'>Select Availability Date : </label><input type="text" value="" id="datepicker" /><br>
+		<input type="button" id="btnCreateAvailability" value='Ok' style='margin-left:00px; margin-top:20px;' />
+		<br>
+		<span style="color: #008F00; font-size: 12px;" id="succmsgNurse"></span>
+	</div>
+	<br>
+	<h1 id="listtitle">Availability List :</h1>
+	<div id="client_requests_window">
+		<table style="border:1px solid #ccc; width:100%;">
+		{{#with nurseAvailability}}
+			{{#if count}}
+			   {{#each this}}
+				<tr>
+					<td style="border:1px solid #ccc; width:55%;">{{availability_date}}</td>
+					<td align="center" style="font-size:12px; border:1px solid #ccc; width:20%;"><a href="javascript:void(0);" onclick="getClientRequest('{{_id}}','{{availability_date}}');">View Client Request</a></td>
+					<td align="center" style="font-size:12px; border:1px solid #ccc; width:20%;"><a href="javascript:void(0);" onclick="deleteAvailability('{{_id}}');">Cancel Availability</a></td>
+				</tr>
+			   {{/each}}
+			{{else}}
+			 <tr>
+				<td>No Availability Found.!</td>
+			</tr>
+			{{/if}}
+		{{/with}}
+		</table>
+		<div id="divtemp"></div>
+	</div>
+</template>
+
+<template name="nurselist">
+	<h1 id="listtitle">Nurses List Available on : <span id="nADate">{{nDate}}</span></h1>
+	<div id="client_requests_window">
+		<table style="border:1px solid #ccc; width:100%;" >
+			<tr><th >Name</th><th >Latitude</th><th>Longitude</th><th>Your<br>Bid</th><th>Total<br>Bids</th><th>Bids <br>(Min - Max)</th><th>&nbsp;</th></tr>
+		{{#with availablenurses}}
+			{{#if length}}
+			   {{#each this}}
+			   <tr id="{{_id}}">
+					<td style="border:1px solid #ccc; "><a href="javascript:void(0);" onclick="viewNurseOnMap('{{_id}}')">{{name}}</a></td>
+					<td style="border:1px solid #ccc;width:13% ">{{latitude}}</td>
+					<td style="border:1px solid #ccc;width:13% ">{{longitude}}</td>
+					<td style="border:1px solid #ccc;width:8% " align="center">{{bidAmount}}</td>
+					<td style="border:1px solid #ccc;width:8% " align="center">{{bidCount}}</td>
+					<td style="border:1px solid #ccc;width:13%;font-size: 12px" align="center">{{minBid}} - {{maxBid}}</td>
+					<td align="center" style="font-size:12px; border:1px solid #ccc;width:12% ">
+						{{#if isBookedByCurrentClient}}
+						<div style="font-size: 11px">
+							<a href="javascript:void(0);"   onclick="updateBookAvailability('{{bidID}}','{{bidAmount}}')">Update</a>&nbsp;&nbsp;|&nbsp;
+							<a href="javascript:void(0);"   onclick="cancelBookAvailability('{{bidID}}');">Cancel</a>
+						
+						{{else}}
+							<a href="javascript:void(0);" class="sendBookRequest" onclick="sendBookAvailability('{{_id}}','{{availability_date}}');">Send Book Request</a>
+						{{/if}}
+						</div>
+					</td>
+				</tr>
+			   {{/each}}
+			{{else}}
+			 <tr>
+				<td>No Nurse Found.!</td>
+			</tr>
+			{{/if}}
+		{{/with}}
+		</table>
+		<div id="map_canvas" style="width:750px; height:350px;"></div>
+		<div >
+			<div id="bidDialog">
+				<label>Bid  Amout: </label>
+				<input type="text" id="txtBid" placeholder="Enter Amount" size="13" maxlength="5" autocomplete="off" value="" />
+				<input type="hidden" id="hdNurseAvID" value="">
+				<input type="hidden" id="hdClientID" value="">
+				<input type="hidden" id="hdDate" value="">
+			</div>
+			<div id="bidUpdateDialog">
+				<label>Bid  Amout: </label>
+				<input type="text" id="txtBidUpdate" placeholder="Enter Amount" size="13" maxlength="5" autocomplete="off" value="" />
+				<input type="hidden" id="hdBidID" value="">				
+			</div>
+		</div>
+	</div>
+</template>
+<template name="clientRequestList">
+	<h1 id="listtitle">Client Request For  : <span id="nADate">{{nDate}}</span></h1>
+	<div id="client_requests_window">
+		<table style="border:1px solid #ccc; width:100%;" >
+			<tr><th>Name</th><th >Email</th> <th>Bid Amount</th><th>&nbsp;</th></tr>
+		{{#with availableRequest}}
+			{{#if length}}
+			   {{#each this}}
+			   <tr id="{{_id}}">
+					<td style="border:1px solid #ccc; "><a href="javascript:void(0);" >{{name}}</a></td>
+					<td style="border:1px solid #ccc;width:13% ">{{email}}</td>
+					<td style="border:1px solid #ccc;width:8% " align="center">{{amount}}</td>
+					<td align="center" style="font-size:12px; border:1px solid #ccc;width:12% ">
+						<div style="font-size: 11px">
+							<a href="javascript:void(0);"    >Approve</a>&nbsp;&nbsp;|&nbsp;
+							<a href="javascript:void(0);"    >Decline</a>
+						</div>
+					</td>
+				</tr>
+			   {{/each}}
+			{{else}}
+			 <tr>
+				<td>No Nurse Found.!</td>
+			</tr>
+			{{/if}}
+		{{/with}}
+		</table>
+		<div id="map_canvas" style="width:750px; height:350px;"></div>
+		<div >
+			<div id="bidDialog">
+				<label>Bid  Amout: </label>
+				<input type="text" id="txtBid" placeholder="Enter Amount" size="13" maxlength="5" autocomplete="off" value="" />
+				<input type="hidden" id="hdNurseAvID" value="">
+				<input type="hidden" id="hdClientID" value="">
+				<input type="hidden" id="hdDate" value="">
+			</div>
+			<div id="bidUpdateDialog">
+				<label>Bid  Amout: </label>
+				<input type="text" id="txtBidUpdate" placeholder="Enter Amount" size="13" maxlength="5" autocomplete="off" value="" />
+				<input type="hidden" id="hdBidID" value="">				
+			</div>
+		</div>
+	</div>
+</template>
+<template name="registerPage">
+	<div id="client_requests_window">
+		<div id="warning"><span style="color: #008F00; font-size: 12px;" id="succmsg"></span></div>
+		
+		<div style='width:100px;display:inline-block;'><label>First Name : </label></div>
+		<input type="text" id="firstname" placeholder="Enter First Name" autocomplete="off" value=""  />
+		<div style="float: right;display: inline-block"><input type="button" id="btnFBData" value="Use Facebook data"></input>
+			<div style="display: none">
+			<div id="fb-root"></div>
+			   {{connect}}
+			   <fb:login-button  autologoutlink="true" show-faces="false" width="200" max-rows="1" scope="publish_actions"></fb:login-button>
+			</div>
+		</div><br><br>
+		
+		<div style='width:100px;display:inline-block;'><label>Last Name : </label></div>
+		<input type="text" id="lastname" placeholder="Enter Last Name" autocomplete="off" value="" /><br><br>
+		
+		<div style='width:100px;display:inline-block; vertical-align: top;'><label>Address : </label></div>
+		<textarea rows="3" cols="25" id='address' name='address'></textarea><br><br>
+		
+		<div style='width:100px;display:inline-block;'><label>Email : </label></div>
+		<input type="text" id="email" placeholder="Enter Email" autocomplete="off" value="" /><br><br>
+		
+		<div style='width:100px;display:inline-block;'><label>Username : </label></div>
+		<input type="text" id="username" placeholder="Enter Username" autocomplete="off" value="" /><br><br>
+		
+		<div style='width:100px;display:inline-block;'><label>Password : </label></div>
+		<input type="password" id="password" placeholder="Enter Password" autocomplete="off" value="" /><br><br>
+
+		<div style='width:100px;display:inline-block;'><label>User Type : </label></div>
+		<input type="radio" id="usrClient" value="client" name="usertype"  checked="true"/><label for="usrClient">Client</label>
+		<input type="radio" id="usrNurse" value="nurse" name="usertype" /><label for="usrNurse">Nurse</label>
+		<br><br>
+		<input type="hidden" id="hdLatitude" />
+		<input type="hidden" id="hdLongitude"  />
+    		
+		<div id="map_canvas" style="width:520px; height:350px;"></div>
+
+		
+		<input type="button" id="btnSignup" value='Register' style='margin-left:90px; margin-top:20px;' />
+		<input type="button" id="btnCancel" value='Cancel' style='margin-left:90px; margin-top:20px;' />
+		</form>
+	</div>
+	
+</template>

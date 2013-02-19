@@ -1,0 +1,139 @@
+body {
+    background-color: #EEEEEE;
+    font-family: 'Open Sans',sans-serif;
+}
+.clearfix {
+    clear: both;
+}
+.userimage {
+	background: url("http://www.bmeplanet.org/images/no_images/no_user_photo.gif") no-repeat scroll left bottom transparent;
+	height:50px;
+}
+#main {
+    margin-top: 50px;
+}
+#main #register_window {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 10px solid #DDDDDD;
+    border-radius: 5px 5px 5px 5px;
+    color: #222222;
+    margin: 6px auto;
+    padding: 10px 20px 20px;
+    width: 350px;
+}
+
+#main #client_requests_window {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 10px solid #DDDDDD;
+    border-radius: 5px 5px 5px 5px;
+    color: #222222;
+    margin: 6px auto;
+    padding: 10px 20px 20px;
+    width: 750px;
+}
+
+#main #register_window #warning {
+    color: red;
+    margin: 10px 0;
+}
+#main #register_window #register {
+    border: 2px solid #DDDDDD;
+    border-radius: 5px 5px 5px 5px;
+    font-size: 18px;
+    margin-left: 10px;
+    padding: 5px;
+    width: 178px;
+}
+#main #chat_window {
+    margin: 6px auto;
+    width: 825px;
+}
+#main #chat_window #chat {
+    background-color: #FFFFFF;
+    border: 3px solid #DDDDDD;
+    border-radius: 5px 5px 5px 5px;
+    color: #222222;
+    font-size: 14px;
+    height: 400px;
+    overflow: auto;
+    padding: 10px 15px 5px 5px;
+    width: 638px;
+}
+#main #chat_window #chat div {
+    display: block;
+    padding-bottom: 3px;
+}
+#main #chat_window #chat div span.sidebar {
+    color: #AAAAAA;
+    display: inline-block;
+    float: left;
+    font-size: 12px;
+    margin-right: 10px;
+    padding-top: 1px;
+    text-align: left;
+    vertical-align: top;
+}
+#main #chat_window #chat div span.msg {
+    float: left;
+    overflow: hidden;
+    width: 77%;
+    word-wrap: break-word;
+}
+#main #chat_window #chat div span.time {
+    margin-right: 5px;
+    text-align: left;
+}
+#main #chat_window #chat div span.user {
+    color: #800000;
+    text-align: right;
+    vertical-align: top;
+}
+#main #chat_window #users {
+    background-color: #FFFFFF;
+    border: 3px solid #DDDDDD;
+    border-radius: 5px 5px 5px 5px;
+    color: #800000;
+    float: right;
+    font-size: 14px;
+    height: 443px;
+    line-height: 20px;
+    overflow: auto;
+    padding: 5px 10px;
+    width: 130px;
+}
+#main h1#title {
+    color: #555555;
+    display: block;
+    font-size: 20px;
+    margin: auto;
+    width: 413px;
+}
+
+#main h1#listtitle {
+    color: #555555;
+    display: block;
+    font-size: 12px;
+    margin: auto;
+    width: 613px;
+}
+
+#main #input {
+    border: 3px solid #DDDDDD;
+    border-radius: 5px 5px 5px 5px;
+    display: block;
+    font-size: 18px;
+    margin: auto;
+    padding: 5px;
+    width: 648px;
+}
+input:focus, select:focus, textarea:focus {
+    outline: 0 none;
+}
+.mapPopup{
+	font-size: 12px;
+}
+
+table th{
+	border:1px solid #ccc; 
+	font-size: 12px;
+}
